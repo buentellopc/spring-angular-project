@@ -45,8 +45,8 @@ public class TutorialController {
 
     }
 
-    @GetMapping("/tutorials/:{id}")
-    public ResponseEntity<Tutorial> getTutorialById(@PathVariable long id) {
+    @GetMapping("/tutorials/{id}")
+    public ResponseEntity<Tutorial> getTutorialById(@PathVariable(name = "id") long id) {
         Optional<Tutorial> tutorialData = tutorialRepository.findById(id);
         if (tutorialData.isPresent()) {
             return new ResponseEntity<>(tutorialData.get(), HttpStatus.OK);
@@ -68,7 +68,7 @@ public class TutorialController {
     }
 
     @PutMapping("/tutorials/{id}")
-    public ResponseEntity<Tutorial> updateTutorial(@PathVariable Long id, @RequestBody Tutorial tutorial) {
+    public ResponseEntity<Tutorial> updateTutorial(@PathVariable("id") Long id, @RequestBody Tutorial tutorial) {
         Optional<Tutorial> tutorialData = tutorialRepository.findById(id);
         if (tutorialData.isPresent()) {
             Tutorial _tutorial = tutorialData.get();
@@ -92,7 +92,7 @@ public class TutorialController {
     }
 
     @DeleteMapping("/tutorials/{id}")
-    public ResponseEntity<HttpStatus> deleteTutorial(@PathVariable Long id) {
+    public ResponseEntity<HttpStatus> deleteTutorial(@PathVariable(name = "id") Long id) {
         try {
             tutorialRepository.deleteById(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -102,14 +102,14 @@ public class TutorialController {
     }
 
     @GetMapping("/tutorials/published")
-    public ResponseEntity<Tutorial> findByPublished() {
+    public ResponseEntity<List<Tutorial>> findByPublished() {
 
         try {
             List<Tutorial> tutorials = tutorialRepository.findByPublished(true);
             if (tutorials.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(tutorials, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
